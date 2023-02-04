@@ -60,35 +60,41 @@ for (var i = 0; i < 5; i++) {
             day5.push(data[i]);
           }
         }
-        console.log(averageArray(day1));
-        console.log(averageArray(day2));
-        console.log(averageArray(day3));
-        console.log(averageArray(day4));
-        console.log(averageArray(day5));
+        averageArray(day1);
+        pushtolocalStorage(averageArray(day1));
+        averageArray(day2);
+        pushtolocalStorage(averageArray(day2));
+        averageArray(day3);
+        pushtolocalStorage(averageArray(day3));
+        averageArray(day4);
+        pushtolocalStorage(averageArray(day4));
+        averageArray(day5);
+        pushtolocalStorage(averageArray(day5));
     });
     
     // Function that sets player score to localStorage
-// function pushtolocalStorage(object) {
-//   // If localStorage is empty create new localStorage
-//   if(localStorage.getItem("score") === null) {
-//     // Create an array of objects
-//     var forecastArray = [];
-//     // Push my object to that array
-//     forecastArray.push(object);
-//     // Set localStorage to my array
-//     localStorage.setItem('score', JSON.stringify(scoreArray));
-//     // If it exists
-//   } else {
-//     // Create an array
-//     var forecastArray = [];
-//     // Get my localStorage which must be parsed 
-//     forecastArray = JSON.parse(localStorage.getItem('score'));
-//     // Push my object to newly created array which is a mirror of localStorage
-//     scoreArray.push(playerObject);
-//     // Push my Array of objects to localStorage
-//     localStorage.setItem('score', JSON.stringify(scoreArray));
-//   }  
-// }
+function pushtolocalStorage(object) {
+  var inputValue = $('#search-input').val();
+  // If localStorage is empty create new localStorage
+  if(localStorage.getItem(inputValue) === null) {
+    // Create an array of objects
+    var forecastArray = [];
+    // Push my object to that array
+    forecastArray.push(object);
+    // Set localStorage to my array
+    localStorage.setItem(inputValue, JSON.stringify(forecastArray));
+    // If it exists
+  } else {
+    // Create an array
+    var forecastArray = [];
+    // Get my localStorage which must be parsed 
+    forecastArray = JSON.parse(localStorage.getItem(inputValue));
+    // Push my object to newly created array which is a mirror of localStorage
+    forecastArray.push(object);
+    // Push my Array of objects to localStorage
+    localStorage.setItem(inputValue, JSON.stringify(forecastArray));
+  }  
+}
 
     function averageArray(arr)
         {
@@ -103,6 +109,7 @@ for (var i = 0; i < 5; i++) {
               windSpeed += arr[i].wind.speed;
           }
 
+          var city = $('#search-input').val();
           var iconForecast = arr[0].weather[0].icon;
           var dateAndTime = arr[0].dt_txt;
           var year = dateAndTime.slice(0, 4);
@@ -115,6 +122,7 @@ for (var i = 0; i < 5; i++) {
           var avgHumidity = (humidity / arr.length).toFixed(2) + "%";
 
           var forecastObj = {
+            city: city,
             icon: iconForecast,
             date: dateForecast,
             temp: avgTemp,
