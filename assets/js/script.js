@@ -2,17 +2,19 @@ var searchButton = $('#search-button');
 var APIKey = '752b36ab082bfbac8bc47e93de46fdfc';
 var daysArray = [];
 // iterate 5 times
-for (var i = 0; i < 5; i++) {
-  // store moment + i in m... moment today, moment tomorrow... for 5 days
+for (var i = 0; i < 6; i++) {
+  // store moment + i in m... moment today, moment tomorrow... for 6 days
   var m = moment().add(i, "d");
   // format all the moments into dd/mm/yyyy
   var x = m.format("DD MM YYYY");
   // push each day into days array
   daysArray.push(x);
 }
+console.log(daysArray)
 
   searchButton.on('click', function(e){
     e.preventDefault();
+    var day0 = [];
     var day1 = []; /*TODAY*/
     var day2 = []; /*TOMORROW ....*/
     var day3 = [];
@@ -29,6 +31,7 @@ for (var i = 0; i < 5; i++) {
       method: "GET",
     }).then(function (response) {
       var data = response.list;
+      console.log(data);
       // GET THE DATA AND STORE IT IN THE CORRECT DAY
       // -----------------------------------------
       // iterate through the data list from the api
@@ -44,35 +47,45 @@ for (var i = 0; i < 5; i++) {
           // IF THE DATE === TODAY
           if (date === daysArray[0]) {
             // push the info from the api into the TODAY array
-            day1.push(data[i]);
+            day0.push(data[i]);
           }
           // same for tomorrow...
           if (date === daysArray[1]) {
-            day2.push(data[i]);
+            day1.push(data[i]);
           }
           if (date === daysArray[2]) {
-            day3.push(data[i]);
+            day2.push(data[i]);
           }
           if (date === daysArray[3]) {
-            day4.push(data[i]);
+            day3.push(data[i]);
           }
           if (date === daysArray[4]) {
+            day4.push(data[i]);
+          }
+          if (date === daysArray[5]) {
             day5.push(data[i]);
           }
+
         }
-        averageArray(day1);
-        pushtolocalStorage(averageArray(day1));
-        averageArray(day2);
-        pushtolocalStorage(averageArray(day2));
-        averageArray(day3);
-        pushtolocalStorage(averageArray(day3));
-        averageArray(day4);
-        pushtolocalStorage(averageArray(day4));
-        averageArray(day5);
-        pushtolocalStorage(averageArray(day5));
+        if(!localStorage.getItem(inputValue)) {
+          var allDays = [day0, day1, day2, day3, day4, day5]; 
+          for(var i = 0; i < allDays.length; i++) {
+            averageArray(allDays[i]);
+            pushtolocalStorage(averageArray(allDays[i]));
+          }
+          var button = $("<button>").text(inputValue);
+          $('#history').append(button);
+          $(button).on('click', function () {
+            if(localStorage.getItem(inputValue) !== null) {
+              // Get my localStorage which must be parsed
+              var forecast = JSON.parse(localStorage.getItem(inputValue));
+              console.log(forecast);
+            }
+          })
+        }
     });
     
-    // Function that sets player score to localStorage
+// Function that sets player score to localStorage
 function pushtolocalStorage(object) {
   var inputValue = $('#search-input').val();
   // If localStorage is empty create new localStorage
