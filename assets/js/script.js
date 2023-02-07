@@ -191,9 +191,9 @@ for (var i = 0; i < 6; i++) {
         var dateForecast = day + "/" + month + "/" + year;
 
         //Count average temp, wind speed, humidity
-        var avgTemp = (sumTemp / arr.length).toFixed(2) + "°C";
-        var avgWind = (windSpeed / arr.length).toFixed(2) + "Kph";
-        var avgHumidity = (humidity / arr.length).toFixed(2) + "%";
+        var avgTemp = (sumTemp / arr.length).toFixed(2) + " °C";
+        var avgWind = (windSpeed / arr.length).toFixed(2) + " Kph";
+        var avgHumidity = (humidity / arr.length).toFixed(2) + " %";
 
         //Create an object that hold counted data
         var forecastObj = {
