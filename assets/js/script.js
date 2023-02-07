@@ -1,5 +1,6 @@
 var searchButton = $('#search-button');
 var APIKey = '752b36ab082bfbac8bc47e93de46fdfc';
+localStorage.clear();
 var daysArray = [];
 // iterate 5 times
 for (var i = 0; i < 6; i++) {
@@ -10,8 +11,7 @@ for (var i = 0; i < 6; i++) {
   // push each day into days array
   daysArray.push(x);
 }
-console.log(daysArray)
-
+  
   searchButton.on('click', function(e){
     e.preventDefault();
     var day0 = [];
@@ -73,75 +73,121 @@ console.log(daysArray)
             averageArray(allDays[i]);
             pushtolocalStorage(averageArray(allDays[i]));
           }
-          var button = $("<button>").text(inputValue);
+          clearChildren();
+          currentWeather();
+          forecastWeather();
+
+          var button = $("<button>").text(inputValue).addClass("btn btn-success");;
           $('#history').append(button);
+
           $(button).on('click', function () {
             if(localStorage.getItem(inputValue) !== null) {
-              // Get my localStorage which must be parsed
-              var forecast = JSON.parse(localStorage.getItem(inputValue));
-              console.log(forecast);
+              clearChildren();
+              currentWeather();
+              forecastWeather();
             }
           })
         }
     });
     
-// Function that sets player score to localStorage
-function pushtolocalStorage(object) {
-  var inputValue = $('#search-input').val();
-  // If localStorage is empty create new localStorage
-  if(localStorage.getItem(inputValue) === null) {
-    // Create an array of objects
-    var forecastArray = [];
-    // Push my object to that array
-    forecastArray.push(object);
-    // Set localStorage to my array
-    localStorage.setItem(inputValue, JSON.stringify(forecastArray));
-    // If it exists
-  } else {
-    // Create an array
-    var forecastArray = [];
-    // Get my localStorage which must be parsed 
-    forecastArray = JSON.parse(localStorage.getItem(inputValue));
-    // Push my object to newly created array which is a mirror of localStorage
-    forecastArray.push(object);
-    // Push my Array of objects to localStorage
-    localStorage.setItem(inputValue, JSON.stringify(forecastArray));
-  }  
-}
+      // Function that sets player score to localStorage
+      function pushtolocalStorage(object) {
+        var inputValue = $('#search-input').val();
+        // If localStorage is empty create new localStorage
+        if(localStorage.getItem(inputValue) === null) {
+          // Create an array of objects
+          var forecastArray = [];
+          // Push my object to that array
+          forecastArray.push(object);
+          // Set localStorage to my array
+          localStorage.setItem(inputValue, JSON.stringify(forecastArray));
+          // If it exists
+        } else {
+          // Create an array
+          var forecastArray = [];
+          // Get my localStorage which must be parsed 
+          forecastArray = JSON.parse(localStorage.getItem(inputValue));
+          // Push my object to newly created array which is a mirror of localStorage
+          forecastArray.push(object);
+          // Push my Array of objects to localStorage
+          localStorage.setItem(inputValue, JSON.stringify(forecastArray));
+        }  
+      }
 
-    function averageArray(arr)
-        {
-          var sumTemp = 0;
-          var windSpeed = 0
-          var humidity = 0;
+      function clearChildren() {
+        $("#today").empty();
+        $("#forecast").empty();
+      }
 
-          for (var i = 0; i < arr.length; i++)
-          {
-              sumTemp = sumTemp + arr[i].main.temp;
-              humidity += arr[i].main.humidity;
-              windSpeed += arr[i].wind.speed;
-          }
+      function capitalizeFirstLetter(string) {
+        return string.charAt(0).toUpperCase() + string.slice(1);
+      }
 
-          var city = $('#search-input').val();
-          var iconForecast = arr[0].weather[0].icon;
-          var dateAndTime = arr[0].dt_txt;
-          var year = dateAndTime.slice(0, 4);
-          var month = dateAndTime.slice(5, 7);
-          var day = dateAndTime.slice(8, 10);
-          var dateForecast = day + "/" + month + "/" + year;
+      function currentWeather() {
+      var forecast = JSON.parse(localStorage.getItem(inputValue));
+        var todayDiv = 
+          `<div class="card" style="width: 64rem;">
+            <div class="card-body">
+              <h3 class="card-title">${
+                capitalizeFirstLetter(forecast[0].city) + ` (` + forecast[0].date + `)`
+              }</h3><img src='http://openweathermap.org/img/wn/${forecast[0].icon}@2x.png'>
+              <h5>Temp: ${forecast[0].temp} </h5>
+              <h5>Wind: ${forecast[0].wind} </h5>
+              <h5>Humidity: ${forecast[0].humidity} </h5>
+            </div>
+          </div>`;
+        $('#today').append(todayDiv);
+      }
 
-          var avgTemp = (sumTemp / arr.length).toFixed(2) + "°C";
-          var avgWind = (windSpeed / arr.length).toFixed(2) + "Kph";
-          var avgHumidity = (humidity / arr.length).toFixed(2) + "%";
-
-          var forecastObj = {
-            city: city,
-            icon: iconForecast,
-            date: dateForecast,
-            temp: avgTemp,
-            wind: avgWind,
-            humidity: avgHumidity
-          }
-          return forecastObj;
+      function forecastWeather() {
+        var forecast = JSON.parse(localStorage.getItem(inputValue));
+          for(var i = 1; i < forecast.length; i++) {
+            var forecastDiv = 
+            `<div class="card" style="width: 12rem;">
+              <div class="card-body">
+                <h5 class="card-title">${
+                  forecast[i].date
+                }</h5><img src='http://openweathermap.org/img/wn/${forecast[i].icon}@2x.png'>
+                <h6>Temp: ${forecast[i].temp} </h6>
+                <h6>Wind: ${forecast[i].wind} </h6>
+                <h6>Humidity: ${forecast[i].humidity} </h6>
+              </div>
+            </div>`;
+            $('#forecast').append(forecastDiv);
         }
+      }
+
+      function averageArray(arr) {
+        var sumTemp = 0;
+        var windSpeed = 0
+        var humidity = 0;
+
+        for (var i = 0; i < arr.length; i++) {
+            sumTemp = sumTemp + arr[i].main.temp;
+            humidity += arr[i].main.humidity;
+            windSpeed += arr[i].wind.speed;
+        }
+
+        var city = $('#search-input').val();
+        var iconForecast = arr[0].weather[0].icon;
+        var dateAndTime = arr[0].dt_txt;
+        var year = dateAndTime.slice(0, 4);
+        var month = dateAndTime.slice(5, 7);
+        var day = dateAndTime.slice(8, 10);
+        var dateForecast = day + "/" + month + "/" + year;
+
+        var avgTemp = (sumTemp / arr.length).toFixed(2) + "°C";
+        var avgWind = (windSpeed / arr.length).toFixed(2) + "Kph";
+        var avgHumidity = (humidity / arr.length).toFixed(2) + "%";
+
+        var forecastObj = {
+          city: city,
+          icon: iconForecast,
+          date: dateForecast,
+          temp: avgTemp,
+          wind: avgWind,
+          humidity: avgHumidity
+        }
+        return forecastObj;
+      }
   });
