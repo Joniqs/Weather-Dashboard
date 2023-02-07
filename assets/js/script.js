@@ -138,7 +138,7 @@ for (var i = 0; i < 6; i++) {
             <div class="card-body">
               <h3 class="card-title">${
                 capitalizeFirstLetter(forecast[0].city) + ` (` + forecast[0].date + `)`
-              }</h3><img src='http://openweathermap.org/img/wn/${forecast[0].icon}@2x.png'>
+              }</h3><img src='https://openweathermap.org/img/wn/${forecast[0].icon}@2x.png'>
               <h5>Temp: ${forecast[0].temp} </h5>
               <h5>Wind: ${forecast[0].wind} </h5>
               <h5>Humidity: ${forecast[0].humidity} </h5>
