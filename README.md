@@ -7,7 +7,7 @@ I've created this project so I can find out what weather is like in different pa
 
 ## Demo
 
-![Alt text](/images/weather_dashboard_demo.png)
+![Alt text](/assets/images/weather_dashboard_demo.png)
 
 https://joniqs.github.io/Weather-Dashboard/
 
